@@ -41,22 +41,30 @@ precedenceMap: Dict[TokenType, Precedence] = {
 }
 
 LangTypes = [ 
-    TokenType.tk_str,
-	TokenType.tk_bool,
-	TokenType.tk_char,
-	TokenType.tk_float,
-	TokenType.tk_float32,
-	TokenType.tk_void,
-	TokenType.tk_int,
-	TokenType.tk_int32,
-	TokenType.tk_int16,
-	TokenType.tk_int8,
-	TokenType.tk_uint32,
-	TokenType.tk_uint16,
-	TokenType.tk_uint8,
-	TokenType.tk_uint
+    TokenType.tk_type_str,
+	TokenType.tk_type_bool,
+	TokenType.tk_type_char,
+	TokenType.tk_type_float,
+	TokenType.tk_type_float32,
+	TokenType.tk_type_void,
+	TokenType.tk_type_int,
+	TokenType.tk_type_int32,
+	TokenType.tk_type_int16,
+	TokenType.tk_type_int8,
+	TokenType.tk_type_uint32,
+	TokenType.tk_type_uint16,
+	TokenType.tk_type_uint8,
+	TokenType.tk_type_uint
 ]
-
+logical_statement=[
+    TokenType.tk_if,
+    TokenType.tk_elif,
+    TokenType.tk_case,
+    TokenType.tk_extern,
+    TokenType.tk_match,
+    TokenType.tk_while,
+    TokenType.tk_for,
+]
 class Parser:
     tk_index: int = 0 # index of the current token
     filename: str = ""
@@ -65,6 +73,7 @@ class Parser:
     current_token: Token
 
     def __init__(self, filename: str,tokens: List[Token]) -> None:
+        self.tab:int = 0
         self.tokens = tokens
         self.filename = filename
         self.advance()
@@ -75,7 +84,9 @@ class Parser:
         while self.tk_index < len(self.tokens):
             programNode.nodes.append(self.parseStatement())
             self.advance()
-
+        if self.tab!=0:
+            for item in range(0,self.tab):
+                programNode.nodes.append(pe_ast.Dedent())
         # display the errors if there is any
         if len(self.errors):
             for err in self.errors:
@@ -127,14 +138,7 @@ class Parser:
 
         return Precedence.pr_lowest
     
-    def parseBlock(self) -> pe_ast.Node:
-        blockNode =  pe_ast.Block()
-        starting_tab = self.current_token.tab
-        #while not self.current_token.tab < starting_tab:
-        blockNode.block.append(self.parseStatement().__str__())
-        self.advance()
-
-        return blockNode
+    
 
     def parseStatement(self) -> pe_ast.Node:
         newNode: pe_ast.Node
@@ -148,23 +152,31 @@ class Parser:
         elif self.current_token.tk_type in LangTypes:
             newNode = self.parseVariableDeclaration()
 
-        elif self.current_token.tk_type == TokenType.tk_if:
-            newNode = self.parseIf()
+        elif self.current_token.tk_type in logical_statement:
+            newNode = self.parse_logical_statement(self.current_token.keyword)
         
-        elif self.current_token.tk_type == TokenType.tk_while:
-            newNode = self.parseWhile()
+        # elif self.current_token.tk_type == TokenType.tk_while:
+        #     newNode = self.parseWhile()
 
-        elif self.current_token.tk_type == TokenType.tk_for:
-            newNode = self.parseFor()
+        # elif self.current_token.tk_type == TokenType.tk_for:
+        #     newNode = self.parseFor()
 
-        elif self.current_token.tk_type == TokenType.tk_match:
-            newNode = self.parseMatch()
+        # elif self.current_token.tk_type == TokenType.tk_match:
+        #     newNode = self.parseMatch()
 
         elif self.current_token.tk_type == TokenType.tk_def:
             newNode = self.parseFunctionDeclaration()
 
         elif self.current_token.tk_type == TokenType.tk_cppcode:
             newNode = self.parseCppcode()
+
+        elif self.current_token.tk_type == TokenType.tk_ident:
+            self.tab+=1
+            newNode = self.ident()
+
+        elif  self.current_token.tk_type==TokenType.tk_dedent:
+            self.tab-=1
+            newNode = self.dedent()
 
         # no matches found, current token must be part of an expression    
         else:
@@ -219,11 +231,11 @@ class Parser:
     def parseExpression(self, precedence: int) -> pe_ast.Node:
         left: pe_ast.Node
 
-        if self.current_token.tk_type == TokenType.integer:
+        if self.current_token.tk_type == TokenType.tk_integer:
             left = self.parseInteger()
-        elif self.current_token.tk_type == TokenType.decimal:
+        elif self.current_token.tk_type == TokenType.tk_decimal:
             left = self.parseDecimal()
-        elif self.current_token.tk_type == TokenType.string:
+        elif self.current_token.tk_type == TokenType.tk_string:
             left = self.parseString()
         elif self.current_token.tk_type == TokenType.tk_false or self.current_token.tk_type == TokenType.tk_true:
             left = self.parseBool()
@@ -274,34 +286,44 @@ class Parser:
 
         return pe_ast.VariableDeclaration(varType, name, value)
 
-    def parseIf(self) -> pe_ast.Node:
+    def parse_logical_statement(self,statement:str) -> pe_ast.Node:
         self.advance()
         condition = self.parseExpression(Precedence.pr_lowest)
         self.expect(TokenType.tk_colon)
         self.advance()
 
-        else_branch = None
         then_branch = self.parseStatement()
         self.advance()
 
-        if self.current_token.tk_type == TokenType.tk_else:
-            self.expect(TokenType.tk_colon)
-            self.advance()
-            else_branch = self.parseStatement()
+        # if self.current_token.tk_type == TokenType.tk_else:
+        #     self.expect(TokenType.tk_colon)
+        #     self.advance()
+        #     else_branch = self.parseStatement()
 
-        return pe_ast.IfStatement(condition, then_branch, else_branch)
+        # return pe_ast.IfStatement(condition, then_branch, else_branch)
+        return pe_ast.logical_Statement(statement,condition, then_branch)
 
-    def parseWhile(self) -> pe_ast.Node:
-        pass
 
-    def parseFor(self) -> pe_ast.Node:
-        pass
+    # def parseWhile(self) -> pe_ast.Node:
+    #     pass
 
-    def parseMatch(self) -> pe_ast.Node:
-        pass
+    # def parseFor(self) -> pe_ast.Node:
+    #     pass
+
+    # def parseMatch(self) -> pe_ast.Node:
+    #     pass
 
     def parseFunctionDeclaration(self) -> pe_ast.Node:
         pass
 
     def parseCppcode(self) -> pe_ast.Node:
         pass
+
+    def ident(self)->pe_ast.Node:
+        self.advance()
+        next_branch = self.parseStatement()
+        return pe_ast.Indent(next_branch)
+
+    def dedent(self)->pe_ast.Node:
+        # self.advance()
+        return pe_ast.Dedent()

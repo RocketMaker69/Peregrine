@@ -6,4 +6,4 @@
 
 import pe_parser
 from lexer import lexer
-print(lexer.lexer('int test = (-34 + 76) * 34.5',"file"))
+print(lexer.lexer('    a=0\n    b=9\nc=5',"file"))

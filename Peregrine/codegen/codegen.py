@@ -4,7 +4,7 @@
 *
 """
 
-from parser import ast
+from pe_parser import pe_ast
 
 class Codegen:
 

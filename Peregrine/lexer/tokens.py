@@ -93,29 +93,32 @@ class TokenType(IntEnum):
 	tk_struct = auto()        # struct 
 
 	# language types
-	tk_str = auto()  #str
-	tk_bool = auto()  #bool
-	tk_char = auto()  #char
-	tk_float = auto() #float
-	tk_float32 = auto() #float32
-	tk_void = auto() #void
-	tk_int = auto() #int
-	tk_int32 = auto() #int32
-	tk_int16 = auto() #int16
-	tk_int8 = auto() #int8
-	tk_uint32 = auto() #uint32
-	tk_uint16 = auto() #uint16
-	tk_uint8 = auto() #uint8
-	tk_uint = auto() #uint
+	tk_type_str = auto() 
+	tk_type_bool = auto() 
+	tk_type_char = auto() 
+	tk_type_float = auto() 
+	tk_type_float32 = auto() 
+	tk_type_void = auto() 
+	tk_type_int = auto() 
+	tk_type_int32 = auto() 
+	tk_type_int16 = auto() 
+	tk_type_int8 = auto() 
+	tk_type_uint32 = auto() 
+	tk_type_uint16 = auto() 
+	tk_type_uint8 = auto() 
+	tk_type_uint = auto() 
+
 	#value type
-	decimal = auto() #5.7
-	integer = auto() #89
-	cpp= auto() #anything within Cppcode()
-	array = auto() #["item"]
-	dictionary = auto() #{"item": value}
-	string = auto() #"some string"
-	tk_indent = auto()         # beginning of identation
+	tk_decimal = auto() 
+	tk_integer = auto() 
+	tk_string = auto() 
+	cpp= auto() 
+	array = auto() 
+	dictionary = auto() 
+
+	tk_ident = auto()         # beginning of identation
 	tk_dedent = auto()        # end of identation
+
 	tk_raw = auto() # raw string i.e. r
 	tk_format = auto() # formatted string i.e. f
 

@@ -6,7 +6,7 @@
 
 from typing import List
 
-from lexer.tokens import Token
+from lexer.tokens import Token,TokenType
 
 class Node:
     def __str__(self) -> str:
@@ -57,7 +57,7 @@ class BoolLiteral(Node):
         self.value = value
 
     def __str__(self) -> str:
-        return "true" if self.value else "false"
+        return "True" if self.value else "False"
 
 class Identifier(Node):
     value: str
@@ -103,7 +103,7 @@ class VariableDeclaration(Node):
         self.value = value
 
     def __str__(self) -> str:
-        return f"{self.varType.keyword} {self.varName} = {str(self.value)}"
+        return f"( {self.varType.keyword} ( {self.varName} = {str(self.value)} ) )"
 
 class VariableReassignment(Node):
     varName: str
@@ -114,23 +114,56 @@ class VariableReassignment(Node):
         self.newValue = newValue
 
     def __str__(self) -> str:
-        return f"{self.varName} = {str(self.newValue)}"
+        return f"({self.varName} = {str(self.newValue)})"
 
-class Block(Node):
-    block: List[Node] = []
 
-    def __str__(self) -> str:
-        return "(" + self.block.__str__() + ")"
 
-class IfStatement(Node):
+class logical_Statement(Node):
     condition: Node
     then_branch: Node
-    else_branch: Node
 
-    def __init__(self, condition: Node, then_branch: Node, else_branch: Node) -> None:
+    # def __init__(self, condition: Node, then_branch: Node, else_branch: Node) -> None:
+    def __init__(self,statement:str, condition: Node, then_branch: Node) -> None:
         self.condition = condition
         self.then_branch = then_branch
-        self.else_branch = else_branch
+        # self.else_branch = else_branch
+        self.statement_type:str=statement
+
     
     def __str__(self) -> str:
-        return "if" + "(" + self.condition.__str__() + ") " + self.then_branch.__str__() + " " + "else " + self.else_branch.__str__()
+        #original
+        #i commented it out because it is adding if statement even whene none are available
+        # return "(if" + "(" + self.condition.__str__() + ")) " + self.then_branch.__str__() + " " + "else " + self.else_branch.__str__()
+        return f"({self.statement_type}" + "(" + self.condition.__str__() + ") " + self.then_branch.__str__()
+
+class else_default_Statement(Node):
+    condition: Node
+    then_branch: Node
+
+    # def __init__(self, condition: Node, then_branch: Node, else_branch: Node) -> None:
+    def __init__(self,statement:TokenType, condition: Node, then_branch: Node) -> None:
+        self.condition = condition
+        self.then_branch = then_branch
+        # self.else_branch = else_branch
+        self.statement_type=""
+        if statement==TokenType.tk_else:
+            self.statement_type="else"
+        elif statement==TokenType.tk_default:
+            self.statement_type="elif"
+
+    
+    def __str__(self) -> str:
+        #original
+        #i commented it out because it is adding if statement even whene none are available
+        # return "(if" + "(" + self.condition.__str__() + ")) " + self.then_branch.__str__() + " " + "else " + self.else_branch.__str__()
+        return f"({self.statement_type}" + "(" + self.condition.__str__() + ") " + self.then_branch.__str__() 
+
+class Indent(Node):
+    def __init__(self,next: Node):
+        self.next=next
+    def __str__(self) -> str:
+        return self.next.__str__()
+
+class Dedent(Node):
+    def __str__(self) -> str:
+        return ")"
