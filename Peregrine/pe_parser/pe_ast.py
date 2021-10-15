@@ -30,7 +30,7 @@ class IntegerLiteral(Node):
         self.value = value
 
     def __str__(self) -> str:
-        return self.value
+        return f"({self.value})"
 
 class DecimalLiteral(Node):
     value: str
@@ -39,7 +39,7 @@ class DecimalLiteral(Node):
         self.value = value
 
     def __str__(self) -> str:
-        return self.value
+        return f"({self.value})"
 
 class StringLiteral(Node):
     value: str

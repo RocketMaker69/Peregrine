@@ -115,7 +115,6 @@ class Parser:
     def advance(self) -> None:
         if self.tk_index >= len(self.tokens):
             return
-
         self.current_token = self.tokens[self.tk_index]
         self.tk_index += 1
 
@@ -171,8 +170,8 @@ class Parser:
             newNode = self.parseCppcode()
 
         elif self.current_token.tk_type == TokenType.tk_ident:
-            self.tab+=1
-            newNode = self.ident()
+            #raise error
+            pass
 
         elif  self.current_token.tk_type==TokenType.tk_dedent:
             self.tab-=1
@@ -291,9 +290,9 @@ class Parser:
         condition = self.parseExpression(Precedence.pr_lowest)
         self.expect(TokenType.tk_colon)
         self.advance()
-
+        self.expect(TokenType.tk_ident)
+        self.tab+=1
         then_branch = self.parseStatement()
-        self.advance()
 
         # if self.current_token.tk_type == TokenType.tk_else:
         #     self.expect(TokenType.tk_colon)
@@ -319,10 +318,6 @@ class Parser:
     def parseCppcode(self) -> pe_ast.Node:
         pass
 
-    def ident(self)->pe_ast.Node:
-        self.advance()
-        next_branch = self.parseStatement()
-        return pe_ast.Indent(next_branch)
 
     def dedent(self)->pe_ast.Node:
         # self.advance()
