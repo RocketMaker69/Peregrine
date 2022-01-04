@@ -1,22 +1,30 @@
-### Note - We are rewriting the entire thing so please check the [rewrite branch](https://github.com/peregrine-lang/Peregrine/tree/rewrite)
+<p align='center'>
+   <img id="banner" src="./graphics/banner.png" style="width: 65%; align: center;"/>
+   <br/>
+   <i>A Blazing-Fast Language for the Blazing-Fast world.</i>
+   <br/><br/>
+   <a href="https://discord.gg/CAMgzwDJDM">
+      <img src="https://img.shields.io/discord/895990298419818546?logo=discord?style=social">
+   </a>
+   <img src="https://img.shields.io/github/stars/peregrine-lang/peregrine?style=social">
+   <br/>
+   <img src="https://img.shields.io/github/issues/peregrine-lang/peregrine?color=green">
+   <img src="https://img.shields.io/github/contributors/peregrine-lang/peregrine">
+   <br/>
+   <img src="https://img.shields.io/github/workflow/status/peregrine-lang/peregrine/Build%20-%20Meson">
+   <br/>
+   <h1>The Peregrine Programming Language</h1>
+</p>
 
-<img id="banner" src="./graphics/banner.png" style="width: 800px; align: center;"/>
+Peregrine is a Compiled, Systems Programming Language, currently under development.
 
-# Peregrine
-
-Peregrine is a compiled programming language currently under development. Documentation is coming soon.
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ## Purpose and intent
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ### Why am I creating this language?
 
 I am creating it to have the simplicity of Python with the efficiency of C.
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ### Goals
 
@@ -26,43 +34,50 @@ I am creating it to have the simplicity of Python with the efficiency of C.
 - Occupies less memory
 - Compiled
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ### How does it work?
 
-You can consider it to be a superset of C which compiles to clean C. So valid C code is also valid Peregrine code (the language is named Peregrine). It will have no garbage collector because it is a system programming language but it will be very easy to use so there will be less chance of a memory leak.
+You can consider it to be a dialect of python which compiles to clean C++. It will have no garbage collector because it is a system programming language.
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ## Building/compiling Peregrine
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ### Requirements to build from source
 
-- [GCC compiler](https://gcc.gnu.org/)
-- [libtcc](https://bellard.org/tcc/tcc-doc.html#Libtcc)
-- [V compiler](https://vlang.io)
+- [G++ compiler](https://gcc.gnu.org/)
 
 # Compilation instructions
 
-1. Clone this repository using the following command: `git clone https://github.com/Peregrine-lang/Peregrine.git`
-2. Run `cd Peregrine/Peregrine`
-3. To build it, run `v peregrine.v`
-4. That's it. It's that simple
+**1)Clone the rewrite branch of https://github.com/peregrine-lang/Peregrine.git**
+```bash
+git clone https://github.com/peregrine-lang/Peregrine.git
+```
+**2)Cd into the directory**
+```bash
+cd Peregrine
+```
+**3)Build it**
+```bash
+meson builddir
+cd builddir
+ninja
+```
+This will create the binary of the compiler named ``./peregrine.elf`` in the builddir folder
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+**C++ backend**
+To compile it using the c++ backing just run ``./peregrine.elf compile path_to_file.pe`` .It will create the executable named ``./a.out``. Run it to see the result. Check the [can_comp.pe](https://github.com/peregrine-lang/Peregrine/blob/rewrite/can_comp.pe) file in the root directory to know what you can do with the c++ backend at this point
 
-## Primary implementation language
+**JS Backend**
+To use the javascript backend use the following command
+``./peregrine.elf compile path_to_file.js.pe -js``.
+It will create the javascript file named ``index.js``. Run the generated javascript using ``node index.js``. Check the [can_comp.js.pe](https://github.com/peregrine-lang/Peregrine/blob/rewrite/can_comp.js.pe) file in the root directory to know what you can do with the js backend at this point
 
-It is [written in V](https://vlang.io)
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ## Progress
 
 Currently we are working on the codegen and some Peregrine programs are working
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ## Example
 
@@ -70,12 +85,11 @@ Here is a small example for you to understand:
 
 ```py
 def main():
-    print("Hello, World!")
+    printf("Hello, World!")
 ```
 
 The `main` function is the entry point for the program.
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 ## Have questions?
 
@@ -83,7 +97,7 @@ Cool, you can contact me via mail.
 <br> Email: saptakbhoumik@gmail.com
 <br> Discord : https://discord.gg/CAMgzwDJDM
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
 
 ## Want to contribute?
 
@@ -93,25 +107,7 @@ Take a look at the [open issues](https://github.com/Peregrine-lang/Peregrine/iss
 
 Please check [CONTRIBUTING.md](https://github.com/Peregrine-lang/Peregrine/blob/main/CONTRIBUTING.md) to learn how you can contribute.
 
-If you create any new file make sure to comment your name in the file as shown `Original author: Your name`
 
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
-
-## Testing
-
-The project has automatic tests which will run on pull requests and pushes to the project.  
-Tests which require user input won't run but the code will still be compiled.  
-If you add new functionality to the project please run the appropriate tests for it, and create tests for your functionality if possible.
-
-#### It is recommended to only use input when absolutely necessary (example: you test the `input()` function)
-
-This is the case because tests which require user input will only be compiled and can only be checked for syntax errors, and not issues with the functionality of the given test subject.
-
-#### [`/Peregrine/tests/ci`](./Peregrine/tests/ci) - Tests which require no user input.
-
-#### [`/Peregrine/tests/manual`](./Peregrine/tests/manual) - Tests which require user input and also include the tests you write for CI
-
-![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 # License
 
